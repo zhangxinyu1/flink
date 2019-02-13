@@ -152,8 +152,8 @@ public class HiveTableSource extends PartitionableTableSource implements BatchTa
 				client = RetryingMetaStoreClient.getProxy(hiveConf,
 																		null,
 																		null,
-																		HiveMetaStoreClient.class.getName(),
-																		true);
+																		new HashMap<>(),
+																		HiveMetaStoreClient.class.getName());
 				List<org.apache.hadoop.hive.metastore.api.Partition> partitions = client.listPartitions(dbName, tableName, (short) -1);
 				for (org.apache.hadoop.hive.metastore.api.Partition partition: partitions){
 					StorageDescriptor sd = partition.getSd();
@@ -324,7 +324,6 @@ public class HiveTableSource extends PartitionableTableSource implements BatchTa
 			colNames.add(col.getName());
 		}
 		properties.setProperty(serdeConstants.LIST_COLUMNS, StringUtils.join(colNames, ","));
-		properties.setProperty(serdeConstants.COLUMN_NAME_DELIMITER, ",");
 		properties.setProperty(serdeConstants.LIST_COLUMN_TYPES, StringUtils.join(colTypes, DEFAULT_LIST_COLUMN_TYPES_SEPARATOR));
 		properties.setProperty(serdeConstants.SERIALIZATION_NULL_FORMAT, "NULL");
 		properties.putAll(parameters);
