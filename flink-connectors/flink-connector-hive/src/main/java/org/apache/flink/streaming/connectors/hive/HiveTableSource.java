@@ -39,12 +39,16 @@ import org.apache.flink.table.util.TableSchemaUtil;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.hive.conf.HiveConf;
+import org.apache.hadoop.hive.metastore.HiveMetaHook;
+import org.apache.hadoop.hive.metastore.HiveMetaHookLoader;
 import org.apache.hadoop.hive.metastore.HiveMetaStoreClient;
 import org.apache.hadoop.hive.metastore.IMetaStoreClient;
 import org.apache.hadoop.hive.metastore.RetryingMetaStoreClient;
 import org.apache.hadoop.hive.metastore.api.FieldSchema;
+import org.apache.hadoop.hive.metastore.api.MetaException;
 import org.apache.hadoop.hive.metastore.api.SerDeInfo;
 import org.apache.hadoop.hive.metastore.api.StorageDescriptor;
+import org.apache.hadoop.hive.metastore.api.Table;
 import org.apache.hadoop.hive.serde.serdeConstants;
 import org.apache.hadoop.mapred.JobConf;
 import org.slf4j.Logger;
@@ -150,10 +154,13 @@ public class HiveTableSource extends PartitionableTableSource implements BatchTa
 			IMetaStoreClient client = null;
 			try {
 				client = RetryingMetaStoreClient.getProxy(hiveConf,
-																		null,
-																		null,
-																		new HashMap<>(),
-																		HiveMetaStoreClient.class.getName());
+					new HiveMetaHookLoader() {
+						@Override
+						public HiveMetaHook getHook(Table tbl) throws MetaException {
+							return null;
+						}
+					},
+					HiveMetaStoreClient.class.getName());
 				List<org.apache.hadoop.hive.metastore.api.Partition> partitions = client.listPartitions(dbName, tableName, (short) -1);
 				for (org.apache.hadoop.hive.metastore.api.Partition partition: partitions){
 					StorageDescriptor sd = partition.getSd();

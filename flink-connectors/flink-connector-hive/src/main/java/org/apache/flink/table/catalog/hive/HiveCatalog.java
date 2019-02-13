@@ -37,6 +37,8 @@ import org.apache.flink.util.StringUtils;
 
 import org.apache.hadoop.hive.common.StatsSetupConst;
 import org.apache.hadoop.hive.conf.HiveConf;
+import org.apache.hadoop.hive.metastore.HiveMetaHook;
+import org.apache.hadoop.hive.metastore.HiveMetaHookLoader;
 import org.apache.hadoop.hive.metastore.HiveMetaStoreClient;
 import org.apache.hadoop.hive.metastore.IMetaStoreClient;
 import org.apache.hadoop.hive.metastore.RetryingMetaStoreClient;
@@ -100,9 +102,12 @@ public class HiveCatalog implements ReadableWritableCatalog {
 		try {
 			return RetryingMetaStoreClient.getProxy(
 				hiveConf,
-				null,
-				null,
-				new HashMap<>(),
+				new HiveMetaHookLoader() {
+					@Override
+					public HiveMetaHook getHook(Table tbl) throws MetaException {
+						return null;
+					}
+				},
 				HiveMetaStoreClient.class.getName());
 		} catch (MetaException e) {
 			throw new FlinkHiveException("Failed to create Hive metastore client", e);
