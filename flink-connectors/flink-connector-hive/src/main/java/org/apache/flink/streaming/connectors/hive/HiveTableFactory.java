@@ -139,6 +139,7 @@ public class HiveTableFactory implements BatchTableSourceFactory<BaseRow>, Table
 		// Hive table parameters
 		properties.add(HiveTableConfig.HIVE_TABLE_PROPERTY_TRANSIENT_LASTDDLTIME);
 		properties.add(HiveTableConfig.HIVE_TABLE_PROPERTY_LAST_MODIFIED_TIME);
+		properties.add(HiveTableConfig.HIVE_TABLE_PROPERTY_LAST_MODIFIED_BY);
 
 		// Hive table stats
 		properties.add(StatsSetupConst.NUM_FILES);
