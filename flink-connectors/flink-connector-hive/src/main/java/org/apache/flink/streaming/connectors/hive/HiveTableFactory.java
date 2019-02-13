@@ -120,6 +120,7 @@ public class HiveTableFactory implements BatchTableSourceFactory<BaseRow>, Table
 	public List<String> supportedProperties() {
 		List<String> properties = new ArrayList<>();
 		properties.add(CONNECTOR_PROPERTY_VERSION);
+		properties.add(CONNECTOR_TYPE);
 		properties.add(HIVE_TABLE_TYPE);
 
 		// Hive catalog configs
@@ -153,6 +154,8 @@ public class HiveTableFactory implements BatchTableSourceFactory<BaseRow>, Table
 		properties.add(HiveTableConfig.HIVE_TABLE_TABLE_NAME);
 		properties.add(HiveTableConfig.HIVE_TABLE_PARTITION_FIELDS);
 		properties.add(HiveConf.ConfVars.METASTOREURIS.varname);
+
+		properties.add(HiveTableConfig.EXTERNAL);
 
 		return properties;
 	}
